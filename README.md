@@ -2,6 +2,10 @@
 
 Minecraft 风格的 Windows 11 锁屏随机标语 Windhawk Mod。
 
+## 效果预览
+
+![Windows 11 锁屏上的黄色倾斜标语与阴影](images/screenshot.png)
+
 ## 使用
 
 1. 打开 Windhawk 的 Mod 编辑器。

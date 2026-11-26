@@ -472,6 +472,7 @@ static void Attach(StackPanel const& panel) {
     Grid splash;
     splash.Name(kSplashName);
     splash.IsHitTestVisible(false);
+    splash.Visibility(Visibility::Collapsed);
     splash.HorizontalAlignment(HorizontalAlignment::Center);
     splash.Margin({12, 20, 12, 20});
     splash.RenderTransformOrigin({0.5f, 0.5f});
@@ -595,13 +596,14 @@ static bool Update() {
         g_previous = s.texts[index];
         g_text.Text(g_previous);
         g_shadow.Text(g_previous);
-        g_refresh = false;
     }
 
     if (attached || dirty || (s.adaptiveScale && refreshed)) {
         Apply(s);
     }
 
+    g_splash.Visibility(Visibility::Visible);
+    g_refresh = false;
     return true;
 }
 
@@ -669,6 +671,7 @@ static void StartObserving() {
             if (g_visible) {
                 RefreshOnShow();
             } else {
+                if (g_splash) g_splash.Visibility(Visibility::Collapsed);
                 StopAttachTimer();
             }
         } catch (hresult_error const& e) {
