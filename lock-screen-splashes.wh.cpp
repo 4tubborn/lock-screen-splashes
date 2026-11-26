@@ -17,6 +17,8 @@
 /*
 # Lock Screen Splashes
 
+![Screenshot](https://raw.githubusercontent.com/4tubborn/lock-screen-splashes/main/images/screenshot.png)
+
 Adds Minecraft-style animated splash texts to the Windows lock screen.
 
 ## Features
