@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Windhawk Mod",
+            "type": "process",
+            "command": "D:/Windhawk/Compiler/bin/clang++.exe",
+            "args": [
+                "@build_flags.txt",
+                "-DWH_MOD_ID=L\"lock-screen-splashes\"",
+                "-DWH_MOD_VERSION=L\"0.4.5\"",
+                "-I",
+                "D:/Windhawk/Compiler/include",
+                "lock-screen-splashes.wh.cpp",
+                "D:/Windhawk/Engine/1.7.3/64/windhawk.lib",
+                "-lole32",
+                "-loleaut32",
+                "-lruntimeobject",
+                "-o",
+                "mod.dll"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        }
+    ]
+}
