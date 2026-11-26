@@ -194,6 +194,7 @@ Licensed under GPL-3.0-or-later.
 // ==/WindhawkModSettings==
 
 #include <windows.h>
+#include <windhawk_utils.h>
 #undef GetCurrentTime
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
@@ -254,13 +255,6 @@ static int g_attachAttempts;
 static constexpr wchar_t kSplashName[] = L"WindhawkLockScreenSplash";
 static bool g_visible = false, g_refresh = true;
 static std::wstring g_previous;
-
-static std::wstring StringSetting(PCWSTR key) {
-    auto value = Wh_GetStringSetting(key);
-    std::wstring result = value ? value : L"";
-    if (value) Wh_FreeStringSetting(value);
-    return result;
-}
 
 static void AddLine(std::vector<std::wstring>& lines, std::wstring line) {
     auto first = line.find_first_not_of(L" \t\r\n");
@@ -359,22 +353,22 @@ static void LoadSettings() {
     // Serialize reads so a delayed settings callback cannot publish older values.
     std::lock_guard lock(g_mutex);
     Settings s{};
+    using WindhawkUtils::StringSetting;
     for (int i = 0; i < 4096; ++i) {
-        auto key = L"splashTexts[" + std::to_wstring(i) + L"]";
-        auto value = StringSetting(key.c_str());
-        if (value.empty()) break;
-        AddLine(s.texts, value);
+        auto value = StringSetting::make(L"splashTexts[%d]", i);
+        if (!*value.get()) break;
+        AddLine(s.texts, value.get());
     }
-    auto file = StringSetting(L"splashFile");
+    std::wstring file = StringSetting::make(L"splashFile").get();
     if (s.texts.empty()) s.texts.push_back(L"Removed Herobrine");
-    s.font = StringSetting(L"fontFamily");
+    s.font = StringSetting::make(L"fontFamily").get();
     if (s.font.empty()) s.font = L"Segoe UI";
-    auto fallback = StringSetting(L"fallbackFontFamily");
+    std::wstring fallback = StringSetting::make(L"fallbackFontFamily").get();
     if (fallback.find_first_not_of(L" \t\r\n") != std::wstring::npos) {
         s.font += L", ";
         s.font += fallback;
     }
-    auto color = StringSetting(L"color");
+    std::wstring color = StringSetting::make(L"color").get();
     if ((color.size() == 7 || color.size() == 9) && color[0] == L'#' &&
         color.find_first_not_of(L"0123456789abcdefABCDEF", 1) == std::wstring::npos) {
         auto v = std::stoul(color.substr(1), nullptr, 16);
@@ -599,8 +593,6 @@ static bool Update() {
         g_previous = s.texts[index];
         g_text.Text(g_previous);
         g_shadow.Text(g_previous);
-        //g_text.Text(s.texts.front());
-        //g_shadow.Text(s.texts.front());
         g_refresh = false;
     }
 
